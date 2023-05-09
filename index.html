@@ -7,5 +7,15 @@
 
   <body>
     <canvas id="glcanvas" width="640" height="480"></canvas>
+    <script>
+      const gl = document.getElementById("glcanvas").getContext("webgl");
+
+      function step(now) {
+        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    </script>
   </body>
 </html>
