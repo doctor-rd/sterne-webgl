@@ -10,6 +10,13 @@
     <script>
       const gl = document.getElementById("glcanvas").getContext("webgl");
 
+      function loadShader(type, source) {
+        const shader = gl.createShader(type);
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
+        return shader;
+      }
+
       const fragSource = `
         varying lowp float vBright;
         void main(void) {
