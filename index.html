@@ -22,6 +22,8 @@
             this[i].z+=d;
             while (this[i].z>m)
               this[i].z-=m;
+            while (this[i].z<0)
+              this[i].z+=m;
           }
         }
         return stars;
