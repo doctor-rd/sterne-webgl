@@ -8,6 +8,25 @@
   <body>
     <canvas id="glcanvas" width="640" height="480"></canvas>
     <script>
+      function createStars(n, r, m) {
+        let stars = [];
+        for (let i=0; i<n; i++) {
+          stars.push({
+            x: (Math.random()*2-1)*r,
+            y: (Math.random()*2-1)*r,
+            z: Math.random()*m
+          });
+        }
+        stars.move = function(d) {
+          for (let i=0; i<this.length; i++) {
+            this[i].z+=d;
+            while (this[i].z>m)
+              this[i].z-=m;
+          }
+        }
+        return stars;
+      }
+
       const gl = document.getElementById("glcanvas").getContext("webgl");
 
       function loadShader(type, source) {
