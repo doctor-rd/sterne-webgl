@@ -64,7 +64,11 @@
       stars = createStars(2000, 2, 10);
       let speed = -0.1
 
+      let then = 0;
       function step(now) {
+        deltaTime = now - then;
+        then = now;
+
         let vertices = [];
         for (let i=0; i<stars.length; i++) {
           let star = stars[i];
@@ -75,6 +79,8 @@
           vertices.push(star.y);
           vertices.push(star.z-speed);
         }
+
+        stars.move(speed*deltaTime/200);
 
         let vertex_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
