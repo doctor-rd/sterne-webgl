@@ -38,6 +38,15 @@
         return shader;
       }
 
+      const vertSource = `
+        attribute vec3 coord;
+        varying lowp float vBright;
+        void main(void) {
+          gl_Position = vec4(coord.x, coord.y, -0.1*coord.z, 2.0*coord.z-1.0);
+          vBright = 1.0-(coord.z/5.0);
+        }
+      `;
+
       const fragSource = `
         varying lowp float vBright;
         void main(void) {
@@ -45,9 +54,41 @@
         }
       `;
 
+      const vertShader = loadShader(gl.VERTEX_SHADER, vertSource);
+      const fragShader = loadShader(gl.FRAGMENT_SHADER, fragSource);
+      const shaderProgram = gl.createProgram();
+      gl.attachShader(shaderProgram, vertShader);
+      gl.attachShader(shaderProgram, fragShader);
+      gl.linkProgram(shaderProgram);
+
+      stars = createStars(2000, 2, 10);
+      let speed = -0.1
+
       function step(now) {
+        let vertices = [];
+        for (let i=0; i<stars.length; i++) {
+          let star = stars[i];
+          vertices.push(star.x);
+          vertices.push(star.y);
+          vertices.push(star.z);
+          vertices.push(star.x);
+          vertices.push(star.y);
+          vertices.push(star.z-speed);
+        }
+
+        let vertex_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+        gl.useProgram(shaderProgram);
+        const coord = gl.getAttribLocation(shaderProgram, "coord");
+        gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(coord);
+
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        gl.enable(gl.DEPTH_TEST);
+        gl.depthFunc(gl.LEQUAL);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        gl.drawArrays(gl.LINES, 0, 2*stars.length);
         requestAnimationFrame(step);
       }
       requestAnimationFrame(step);
