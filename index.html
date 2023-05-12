@@ -43,7 +43,7 @@
         varying lowp float vBright;
         void main(void) {
           gl_Position = vec4(coord.x, coord.y, -0.1*coord.z, 2.0*coord.z-1.0);
-          vBright = 1.0-(coord.z/5.0);
+          vBright = 1.2-(coord.z/4.5);
         }
       `;
 
@@ -61,7 +61,7 @@
       gl.attachShader(shaderProgram, fragShader);
       gl.linkProgram(shaderProgram);
 
-      stars = createStars(2000, 2, 10);
+      stars = createStars(5000, 4, 10);
       let speed = -0.1
 
       let then = 0;
