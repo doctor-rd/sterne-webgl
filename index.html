@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <title>Sterne</title>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.9/dat.gui.min.js"></script>
   </head>
 
   <body>
@@ -62,7 +63,11 @@
       gl.linkProgram(shaderProgram);
 
       stars = createStars(8000, 6.0, 10.0);
-      let speed = -0.1;
+      let ctrl = {speed: -0.1};
+
+      const gui = new dat.GUI({width: gl.canvas.width, autoPlace: false});
+      gui.add(ctrl, "speed", -.5, .5);
+      document.body.append(gui.domElement);
 
       let then = 0;
       function step(now) {
@@ -77,10 +82,10 @@
           vertices.push(star.z);
           vertices.push(star.x);
           vertices.push(star.y);
-          vertices.push(star.z-speed);
+          vertices.push(star.z-ctrl.speed);
         }
 
-        stars.move(speed*deltaTime/200);
+        stars.move(ctrl.speed*deltaTime/200);
 
         let vertex_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
