@@ -9,15 +9,8 @@
   <body>
     <canvas id="glcanvas" width="640" height="480"></canvas>
     <script>
-      function createStars(n, r, m) {
+      function createStars(r, m) {
         let stars = [];
-        for (let i=0; i<n; i++) {
-          stars.push({
-            x: (Math.random()*2-1)*r,
-            y: (Math.random()*2-1)*r,
-            z: Math.random()*m
-          });
-        }
         stars.move = function(d) {
           for (let i=0; i<this.length; i++) {
             this[i].z+=d;
@@ -25,6 +18,15 @@
               this[i].z-=m;
             while (this[i].z<0)
               this[i].z+=m;
+          }
+        }
+        stars.append = function(n) {
+          for (let i=0; i<n; i++) {
+            stars.push({
+              x: (Math.random()*2-1)*r,
+              y: (Math.random()*2-1)*r,
+              z: Math.random()*m
+            });
           }
         }
         return stars;
@@ -62,17 +64,23 @@
       gl.attachShader(shaderProgram, fragShader);
       gl.linkProgram(shaderProgram);
 
-      stars = createStars(8000, 6.0, 10.0);
-      let ctrl = {speed: -0.1};
+      stars = createStars(6.0, 10.0);
+      let ctrl = {speed: -0.1, nstars: 8000};
 
       const gui = new dat.GUI({width: gl.canvas.width, autoPlace: false});
-      gui.add(ctrl, "speed", -.5, .5);
+      gui.add(ctrl, "speed", -1, 1);
+      gui.add(ctrl, "nstars", 100, 40000, 1);
       document.body.append(gui.domElement);
 
       let then = 0;
       function step(now) {
         deltaTime = now - then;
         then = now;
+
+        if (ctrl.nstars>stars.length)
+          stars.append(ctrl.nstars-stars.length);
+        if (ctrl.nstars<stars.length)
+          stars.length = ctrl.nstars;
 
         let vertices = [];
         for (let i=0; i<stars.length; i++) {
